@@ -1,0 +1,100 @@
+- [TM00] Mega Punch
+- [TM01] Mega Kick
+- [TM02] Pay Day
+- [TM03] Fire Punch
+- [TM04] Ice Punch
+- [TM05] Thunder Punch
+- [TM06] Fly
+- [TM07] Pin Missile
+- [TM08] Hyper Beam
+- [TM09] Giga Impact
+- [TM10] Magical Leaf
+- [TM11] Solar Beam
+- [TM12] Solar Blade
+- [TM13] Fire Spin
+- [TM14] Thunder Wave
+- [TM15] Dig
+- [TM16] Screech
+- [TM17] Light Screen
+- [TM18] Reflect
+- [TM19] Safeguard
+- [TM20] Self-Destruct
+- [TM21] Rest
+- [TM22] Rock Slide
+- [TM23] Thief
+- [TM24] Snore
+- [TM25] Protect
+- [TM26] Scary Face
+- [TM27] Icy Wind
+- [TM28] Giga Drain
+- [TM29] Charm
+- [TM30] Steel Wing
+- [TM31] Attract
+- [TM32] Sandstorm
+- [TM33] Rain Dance
+- [TM34] Sunny Day
+- [TM35] Hail
+- [TM36] Whirlpool
+- [TM37] Beat Up
+- [TM38] Will-O-Wisp
+- [TM39] Facade
+- [TM40] Swift
+- [TM41] Helping Hand
+- [TM42] Revenge
+- [TM43] Brick Break
+- [TM44] Imprison
+- [TM45] Dive
+- [TM46] Weather Ball
+- [TM47] Fake Tears
+- [TM48] Rock Tomb
+- [TM49] Sand Tomb
+- [TM50] Bullet Seed
+- [TM51] Icicle Spear
+- [TM52] Bounce
+- [TM53] Mud Shot
+- [TM54] Rock Blast
+- [TM55] Brine
+- [TM56] U-turn
+- [TM57] Payback
+- [TM58] Assurance
+- [TM59] Fling
+- [TM60] Power Swap
+- [TM61] Guard Swap
+- [TM62] Speed Swap
+- [TM63] Drain Punch
+- [TM64] Avalanche
+- [TM65] Shadow Claw
+- [TM66] Thunder Fang
+- [TM67] Ice Fang
+- [TM68] Fire Fang
+- [TM69] Psycho Cut
+- [TM70] Trick Room
+- [TM71] Wonder Room
+- [TM72] Magic Room
+- [TM73] Cross Poison
+- [TM74] Venoshock
+- [TM75] Low Sweep
+- [TM76] Round
+- [TM77] Hex
+- [TM78] Acrobatics
+- [TM79] Retaliate
+- [TM80] Volt Switch
+- [TM81] Bulldoze
+- [TM82] Electroweb
+- [TM83] Razor Shell
+- [TM84] Tail Slap
+- [TM85] Snarl
+- [TM86] Phantom Force
+- [TM87] Draining Kiss
+- [TM88] Grassy Terrain
+- [TM89] Misty Terrain
+- [TM90] Electric Terrain
+- [TM91] Psychic Terrain
+- [TM92] Mystical Fire
+- [TM93] Eerie Impulse
+- [TM94] False Swipe
+- [TM95] Air Slash
+- [TM96] Smart Strike
+- [TM97] Brutal Swing
+- [TM98] Stomping Tantrum
+- [TM99] Breaking Swipe
