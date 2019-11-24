@@ -1,4 +1,5 @@
 import { readFileSync } from "fs";
+import { getMoveByName } from "./sword-shield-move-info.js";
 /**
  * @param {string[]} lines
  */
@@ -70,7 +71,7 @@ function* properties(lines) {
       }
 
       const [, level, name] = m;
-      levelUpMoves.push([Number(level), name]);
+      levelUpMoves.push([Number(level), getMoveByName(name)]);
     }
 
     lines = lines.slice(i);
@@ -89,7 +90,7 @@ function* properties(lines) {
       }
 
       const [, name] = m;
-      eggMoves.push(name);
+      eggMoves.push(getMoveByName(name));
     }
 
     lines = lines.slice(i);
