@@ -17,7 +17,7 @@ function* properties(lines) {
   yield {
     baseStats: baseStats
       .replace("Base Stats: ", "")
-      .replace(/ \(BST: 318\)/, "")
+      .replace(/ \(BST: \d+\)/, "")
       .split(".")
       .slice(0, 6)
       .map(Number)
