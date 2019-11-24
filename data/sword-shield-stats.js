@@ -1,5 +1,6 @@
 import { readFileSync } from "fs";
 import { getMoveByName } from "./sword-shield-move-info.js";
+import { getAbilityByName } from "./sword-shield-ability-descriptions.js";
 /**
  * @param {string[]} lines
  */
@@ -35,7 +36,7 @@ function* properties(lines) {
       .split(" | ")
       .reduce((acc, s) => {
         const match = /(.*) \((.)\)/.exec(s);
-        acc[match[2]] = match[1];
+        acc[match[2]] = getAbilityByName(match[1]);
         return acc;
       }, {})
   };

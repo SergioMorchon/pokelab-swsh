@@ -124,7 +124,7 @@ export const sword_shield_move_info = readFileSync(
     return acc;
   }, {});
 
-const moveByName = Object.entries(sword_shield_move_info).reduce(
+const byName = Object.entries(sword_shield_move_info).reduce(
   (acc, [key, { name }]) => {
     acc[name] = Number(key);
     return acc;
@@ -133,7 +133,6 @@ const moveByName = Object.entries(sword_shield_move_info).reduce(
 );
 
 export const getMoveByName = name => {
-  const moveId = moveByName[name];
-  console.assert(moveId, `Move name '${name}' exists`);
-  return moveId;
+  console.assert(name in byName, `Move name '${name}' exists`);
+  return byName[name];
 };
