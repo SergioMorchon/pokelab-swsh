@@ -1,5 +1,6 @@
 import { writeFileSync, existsSync, mkdirSync } from "fs";
 import { sep } from "path";
+import { types } from "./types.js";
 import { sword_shield_move_info } from "./sword-shield-move-info.js";
 import { sword_shield_tm_list } from "./sword-shield-tm-list.js";
 import { sword_shield_tr_list } from "./sword-shield-tr-list.js";
@@ -12,6 +13,7 @@ if (!existsSync(jsonPath)) {
   mkdirSync(jsonPath);
 }
 
+writeFileSync(`${jsonPath}types.json`, JSON.stringify(types, null, "\t"));
 writeFileSync(
   `${jsonPath}sword-shield-move-info.json`,
   JSON.stringify(sword_shield_move_info, null, "\t")

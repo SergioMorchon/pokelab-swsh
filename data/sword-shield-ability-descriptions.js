@@ -14,7 +14,7 @@ export const sword_shield_ability_descriptions = readFileSync(
 
 const byName = Object.entries(sword_shield_ability_descriptions).reduce(
   (acc, [key, { name }]) => {
-    acc[name] = key;
+    acc[name] = Number(key);
     return acc;
   },
   {}

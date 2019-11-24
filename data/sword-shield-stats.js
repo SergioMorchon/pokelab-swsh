@@ -1,6 +1,7 @@
 import { readFileSync } from "fs";
 import { getMoveByName } from "./sword-shield-move-info.js";
 import { getAbilityByName } from "./sword-shield-ability-descriptions.js";
+import { getTypeByName } from "./types.js";
 /**
  * @param {string[]} lines
  */
@@ -40,7 +41,12 @@ function* properties(lines) {
         return acc;
       }, {})
   };
-  yield { type: type.replace("Type: ", "").split(" / ") };
+  yield {
+    type: type
+      .replace("Type: ", "")
+      .split(" / ")
+      .map(getTypeByName)
+  };
   const items = {
     items: lines
       .filter(s => s.startsWith("Item "))
