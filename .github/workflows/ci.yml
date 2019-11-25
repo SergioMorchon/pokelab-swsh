@@ -22,7 +22,7 @@ jobs:
         with:
           node-version: ${{ matrix.node_version }}
       - run: npm ci
-      - run: npm prepublishOnly
+      - run: npm run prepublishOnly
       - uses: actions/upload-artifact@master
         with:
           name: data
