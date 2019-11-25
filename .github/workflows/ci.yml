@@ -25,4 +25,4 @@ jobs:
       - uses: actions/upload-artifact@master
         with:
           name: data
-          path: data/json
+          path: data/dist
