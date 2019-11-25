@@ -2,6 +2,8 @@ import { readFileSync } from "fs";
 import { getMoveByName } from "./sword-shield-move-info.js";
 import { getAbilityByName } from "./sword-shield-ability-descriptions.js";
 import { getTypeByName } from "./types.js";
+import { getEggGroupByName } from "./egg-groups.js";
+import { getExperienceGroupByName } from "./experience-groups.js";
 
 const stats = readFileSync("./data/raw/sword_shield_stats.txt", "utf-8")
   .split("======")
@@ -33,10 +35,11 @@ const stats = readFileSync("./data/raw/sword_shield_stats.txt", "utf-8")
       .split(" | ")
       .reduce((acc, s) => {
         const match = /(.*) \((.)\)/.exec(s);
-        acc[match[2]] = getAbilityByName(match[1]);
+        const index = match[2] === "H" ? 2 : Number(match[2]) - 1;
+        acc[index] = getAbilityByName(match[1]);
         return acc;
-      }, {});
-    pkm.type = type
+      }, new Array(3));
+    pkm.types = type
       .replace("Type: ", "")
       .split(" / ")
       .map(getTypeByName);
@@ -56,8 +59,13 @@ const stats = readFileSync("./data/raw/sword_shield_stats.txt", "utf-8")
     pkm.items = items;
     const [expGroup, eggGroup, hatchCycles] = lines;
     lines = lines.slice(4);
-    pkm.expGroup = expGroup.replace("EXP Group: ", "");
-    pkm.eggGroup = eggGroup.replace("Egg Group: ", "").split(" / ");
+    pkm.expGroup = getExperienceGroupByName(
+      expGroup.replace("EXP Group: ", "")
+    );
+    pkm.eggGroups = eggGroup
+      .replace("Egg Group: ", "")
+      .split(" / ")
+      .map(getEggGroupByName);
     pkm.hatchCycles = Number(hatchCycles.replace("Hatch Cycles: ", ""));
 
     const levelUpMoves = [];
@@ -140,3 +148,53 @@ const stats = readFileSync("./data/raw/sword_shield_stats.txt", "utf-8")
   });
 
 export default stats;
+
+/** 0x00 */
+const NATIONAL_ID_OFFSET = 0;
+/** 0x02 */
+const GALAR_ID_OFFSET = NATIONAL_ID_OFFSET + 2;
+/** 0x04 */
+const BASE_STATS_OFFSET = GALAR_ID_OFFSET + 2;
+/** 0x0A */
+const EV_YIELD_OFFSET = BASE_STATS_OFFSET + 6;
+/** 0x10 */
+const ABILITIES_OFFSET = EV_YIELD_OFFSET + 6;
+/** 0x16 */
+const TYPES_OFFSET = ABILITIES_OFFSET + 3 * 2;
+/** 0x18 */
+const EGG_GROUPS_OFFSET = TYPES_OFFSET + 2;
+/** 0x1A */
+const EXP_GROUP_OFFSET = EGG_GROUPS_OFFSET + 2;
+/** 0x1B */
+const HATCH_CYCLES_OFFSET = EXP_GROUP_OFFSET + 1;
+
+/** 0x1C */
+const BLOCK_SIZE = HATCH_CYCLES_OFFSET + 1;
+
+export const serializeStats = () =>
+  new DataView(
+    stats.reduce((buffer, pkm, index) => {
+      const data = new DataView(buffer, index * BLOCK_SIZE, BLOCK_SIZE);
+      data.setUint16(NATIONAL_ID_OFFSET, pkm.nationalId, true);
+      data.setUint16(GALAR_ID_OFFSET, pkm.galarDex, true);
+      pkm.baseStats.forEach((stat, index) => {
+        data.setUint8(BASE_STATS_OFFSET + index, stat);
+      });
+      pkm.evYield.forEach((ev, index) => {
+        data.setUint8(EV_YIELD_OFFSET + index, ev);
+      });
+      pkm.abilities.forEach((ability, index) => {
+        data.setUint16(ABILITIES_OFFSET + index * 2, ability);
+      });
+      pkm.types.forEach((type, index) => {
+        data.setUint8(TYPES_OFFSET + index, type);
+      });
+      pkm.eggGroups.forEach((group, index) => {
+        data.setUint8(EGG_GROUPS_OFFSET + index, group);
+      });
+      data.setUint8(EXP_GROUP_OFFSET, pkm.expGroup);
+      data.setUint8(HATCH_CYCLES_OFFSET, pkm.hatchCycles);
+
+      return buffer;
+    }, new ArrayBuffer(stats.length * BLOCK_SIZE))
+  );

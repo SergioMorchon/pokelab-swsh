@@ -10,7 +10,7 @@
       "name": "Iniciar programa",
       "skipFiles": ["<node_internals>/**"],
       "runtimeArgs": ["--experimental-modules"],
-      "program": "${workspaceFolder}\\index.js"
+      "program": "${workspaceFolder}/data/update.js"
     }
   ]
 }

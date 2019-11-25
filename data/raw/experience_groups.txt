@@ -1,0 +1,6 @@
+Erratic
+Fast
+MediumFast
+MediumSlow
+Slow
+Fluctuating
