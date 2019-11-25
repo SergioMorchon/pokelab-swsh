@@ -4,6 +4,18 @@ import { getAbilityByName } from "./sword-shield-ability-descriptions.js";
 import { getTypeByName } from "./types.js";
 import { getEggGroupByName } from "./egg-groups.js";
 import { getExperienceGroupByName } from "./experience-groups.js";
+import {
+  NATIONAL_ID_OFFSET,
+  GALAR_ID_OFFSET,
+  BASE_STATS_OFFSET,
+  EV_YIELD_OFFSET,
+  ABILITIES_OFFSET,
+  TYPES_OFFSET,
+  EGG_GROUPS_OFFSET,
+  EXP_GROUP_OFFSET,
+  HATCH_CYCLES_OFFSET,
+  BLOCK_SIZE
+} from "../src/pokemon-stats-offsets.js";
 
 const stats = readFileSync("./data/raw/sword_shield_stats.txt", "utf-8")
   .split("======")
@@ -148,28 +160,6 @@ const stats = readFileSync("./data/raw/sword_shield_stats.txt", "utf-8")
   });
 
 export default stats;
-
-/** 0x00 */
-const NATIONAL_ID_OFFSET = 0;
-/** 0x02 */
-const GALAR_ID_OFFSET = NATIONAL_ID_OFFSET + 2;
-/** 0x04 */
-const BASE_STATS_OFFSET = GALAR_ID_OFFSET + 2;
-/** 0x0A */
-const EV_YIELD_OFFSET = BASE_STATS_OFFSET + 6;
-/** 0x10 */
-const ABILITIES_OFFSET = EV_YIELD_OFFSET + 6;
-/** 0x16 */
-const TYPES_OFFSET = ABILITIES_OFFSET + 3 * 2;
-/** 0x18 */
-const EGG_GROUPS_OFFSET = TYPES_OFFSET + 2;
-/** 0x1A */
-const EXP_GROUP_OFFSET = EGG_GROUPS_OFFSET + 2;
-/** 0x1B */
-const HATCH_CYCLES_OFFSET = EXP_GROUP_OFFSET + 1;
-
-/** 0x1C */
-const BLOCK_SIZE = HATCH_CYCLES_OFFSET + 1;
 
 export const serializeStats = () =>
   new DataView(

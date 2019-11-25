@@ -4,11 +4,24 @@
   "description": "",
   "main": "index.js",
   "type": "module",
+  "files": [
+    "dist"
+  ],
   "devDependencies": {
-    "@types/node": "^12.12.12"
+    "@babel/core": "^7.7.4",
+    "@babel/preset-env": "^7.7.4",
+    "@babel/preset-typescript": "^7.7.4",
+    "@types/jest": "^24.0.23",
+    "@types/node": "^12.12.12",
+    "babel-jest": "^24.9.0",
+    "jest": "^24.9.0",
+    "typescript": "^3.7.2"
   },
   "scripts": {
     "data:update": "node --experimental-modules ./data/update.js",
-    "postinstall": "npm run data:update"
+    "test": "jest",
+    "build": "tsc -p src",
+    "postinstall": "npm run data:update",
+    "prepublishOnly": "npm run data:update && npm run build && npm test"
   }
 }
