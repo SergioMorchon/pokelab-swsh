@@ -5,7 +5,7 @@ import { sword_shield_move_info } from "./sword-shield-move-info.js";
 import { serialize as serializeTms } from "./sword-shield-tm-list.js";
 import { serialize as serializeTrs } from "./sword-shield-tr-list.js";
 import { sword_shield_ability_descriptions } from "./sword-shield-ability-descriptions.js";
-import { sword_shield_stats } from "./sword-shield-stats.js";
+import sword_shield_stats from "./sword-shield-stats.js";
 
 const jsonPath = [process.cwd(), "data", "json"].join(sep) + sep;
 
