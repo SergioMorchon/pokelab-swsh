@@ -1,27 +1,36 @@
 {
-  "name": "pokelab",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
-  "type": "module",
-  "files": [
-    "dist"
-  ],
-  "devDependencies": {
-    "@babel/core": "^7.7.4",
-    "@babel/preset-env": "^7.7.4",
-    "@babel/preset-typescript": "^7.7.4",
-    "@types/jest": "^24.0.23",
-    "@types/node": "^12.12.12",
-    "babel-jest": "^24.9.0",
-    "jest": "^24.9.0",
-    "typescript": "^3.7.2"
-  },
-  "scripts": {
-    "data:update": "node --experimental-modules ./data/update.js",
-    "test": "jest",
-    "build": "tsc -p src",
-    "postinstall": "npm run data:update",
-    "prepublishOnly": "npm run data:update && npm run build && npm test"
-  }
+	"name": "pokelab",
+	"version": "1.0.0",
+	"description": "",
+	"main": "index.js",
+	"type": "module",
+	"files": [
+		"dist"
+	],
+	"scripts": {
+		"data:update": "node --experimental-modules ./data/update.js",
+		"test": "jest",
+		"build": "tsc -p src",
+		"prettier": "prettier \"**/*.ts\" \"**/*.json\" \"**/*.yml\" \"**/*.md\"",
+		"lint": "eslint src data/**/*.js",
+		"check-code": "npm run lint && npm run prettier -- -l",
+		"fix-code": "npm run lint -- --fix src/** && npm run prettier -- --write",
+		"postinstall": "npm run data:update",
+		"prepublishOnly": "npm run data:update && npm run check-code && npm run build && npm test"
+	},
+	"devDependencies": {
+		"@babel/core": "^7.7.4",
+		"@babel/preset-env": "^7.7.4",
+		"@babel/preset-typescript": "^7.7.4",
+		"@types/jest": "^24.0.23",
+		"@types/node": "^12.12.12",
+		"@typescript-eslint/eslint-plugin": "^2.9.0",
+		"@typescript-eslint/parser": "^2.9.0",
+		"babel-jest": "^24.9.0",
+		"eslint": "^6.7.1",
+		"eslint-config-prettier": "^6.7.0",
+		"jest": "^24.9.0",
+		"prettier": "^1.19.1",
+		"typescript": "^3.7.2"
+	}
 }

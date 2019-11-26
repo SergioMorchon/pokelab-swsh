@@ -6,10 +6,10 @@ export const SPECIAL_DEFENSE = 4;
 export const SPEED = 5;
 
 export const ALL_STATS = [
-  HP,
-  ATTACK,
-  DEFENSE,
-  SPECIAL_ATTACK,
-  SPECIAL_DEFENSE,
-  SPEED
+	HP,
+	ATTACK,
+	DEFENSE,
+	SPECIAL_ATTACK,
+	SPECIAL_DEFENSE,
+	SPEED,
 ].sort();
