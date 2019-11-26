@@ -1,17 +1,20 @@
 import PokemonStats from "../pokemon-stats";
 import { readFileSync } from "fs";
 
-const { buffer } = readFileSync("dist/data/sword_shield_stats");
+const { buffer } = readFileSync("dist/data/pokemon-stats");
+const names = JSON.parse(
+  readFileSync("dist/data/pokemon-names-en.json", "utf-8")
+);
 const dex = new PokemonStats(buffer, {
-  getName: () => "",
+  getName: index => names[index],
   getDescription: () => ""
 });
 
 [
   {
     index: 0,
-    name: "Bulbasaur",
     expectedStats: {
+      name: "Bulbasaur",
       nationalId: 1,
       galarId: null,
       baseStats: [45, 49, 49, 65, 65, 45],
@@ -20,16 +23,16 @@ const dex = new PokemonStats(buffer, {
   },
   {
     index: 320,
-    name: "Spritzee",
     expectedStats: {
+      name: "Spritzee",
       nationalId: 682,
       galarId: 212,
       baseStats: [78, 52, 60, 63, 65, 23],
       evYields: [1, 0, 0, 0, 0, 0]
     }
   }
-].forEach(({ index, name, expectedStats }) =>
-  test(`get(${index}): ${name}`, () => {
+].forEach(({ index, expectedStats }) =>
+  test(`get(${index})`, () => {
     const pokemonStats = dex.get(index);
     Object.keys(expectedStats).forEach(key => {
       expect(pokemonStats[key]).toStrictEqual(expectedStats[key]);
