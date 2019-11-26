@@ -1,5 +1,7 @@
 import PokemonStats from '../pokemon-stats';
 import * as Types from '../types';
+import * as EggGroups from '../egg-groups';
+import * as ExpGroups from '../experience-groups';
 import { readFileSync } from 'fs';
 
 const { buffer } = readFileSync('dist/data/pokemon-stats');
@@ -29,6 +31,9 @@ const dex = new PokemonStats(buffer, {
 				// Chlorophyll
 				33,
 			],
+			eggGroups: [EggGroups.Monster, EggGroups.Grass],
+			expGroup: ExpGroups.MediumSlow,
+			hatchCycles: 20,
 		},
 	},
 	{
@@ -48,6 +53,9 @@ const dex = new PokemonStats(buffer, {
 				// Aroma Veil
 				164,
 			],
+			eggGroups: [EggGroups.Fairy, EggGroups.Fairy],
+			expGroup: ExpGroups.MediumFast,
+			hatchCycles: 20,
 		},
 	},
 ].forEach(({ index, expectedStats }) =>

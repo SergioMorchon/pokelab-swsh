@@ -17,7 +17,7 @@ import {
 	BLOCK_SIZE,
 } from '../src/pokemon-stats-offsets.js';
 
-const stats = readFileSync('./data/raw/sword_shield_stats.txt', 'utf-8')
+const pkms = readFileSync('./data/raw/sword_shield_stats.txt', 'utf-8')
 	.split('======')
 	.filter(Boolean)
 	.map(s => {
@@ -159,11 +159,11 @@ const stats = readFileSync('./data/raw/sword_shield_stats.txt', 'utf-8')
 		return pkm;
 	});
 
-export default stats;
+export default pkms;
 
 export const serializeStats = () =>
 	new DataView(
-		stats.reduce((buffer, pkm, index) => {
+		pkms.reduce((buffer, pkm, index) => {
 			const data = new DataView(buffer, index * BLOCK_SIZE, BLOCK_SIZE);
 			data.setUint16(NATIONAL_ID_OFFSET, pkm.nationalId, true);
 			data.setUint16(GALAR_ID_OFFSET, pkm.galarDex, true);
@@ -174,19 +174,21 @@ export const serializeStats = () =>
 				data.setUint8(EV_YIELD_OFFSET + index, ev);
 			});
 			pkm.abilities.forEach((ability, index) => {
-				data.setUint16(ABILITIES_OFFSET + index * 2, ability);
+				data.setUint16(ABILITIES_OFFSET + index * 2, ability, true);
 			});
 			data.setUint8(TYPES_OFFSET, pkm.types[0]);
 			data.setUint8(
 				TYPES_OFFSET + 1,
 				pkm.types.length === 2 ? pkm.types[1] : pkm.types[0],
 			);
-			pkm.eggGroups.forEach((group, index) => {
-				data.setUint8(EGG_GROUPS_OFFSET + index, group);
-			});
+			data.setUint8(EGG_GROUPS_OFFSET, pkm.eggGroups[0]);
+			data.setUint8(
+				EGG_GROUPS_OFFSET + 1,
+				pkm.eggGroups.length === 2 ? pkm.eggGroups[1] : pkm.eggGroups[0],
+			);
 			data.setUint8(EXP_GROUP_OFFSET, pkm.expGroup);
 			data.setUint8(HATCH_CYCLES_OFFSET, pkm.hatchCycles);
 
 			return buffer;
-		}, new ArrayBuffer(stats.length * BLOCK_SIZE)),
+		}, new ArrayBuffer(pkms.length * BLOCK_SIZE)),
 	);

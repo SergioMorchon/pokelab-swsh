@@ -55,9 +55,9 @@ class PokemonStat {
 	}
 	get abilities(): readonly number[] {
 		return [
-			this.data.getUint16(ABILITIES_OFFSET),
-			this.data.getUint16(ABILITIES_OFFSET + 2),
-			this.data.getUint16(ABILITIES_OFFSET + 4),
+			this.data.getUint16(ABILITIES_OFFSET, true),
+			this.data.getUint16(ABILITIES_OFFSET + 2, true),
+			this.data.getUint16(ABILITIES_OFFSET + 4, true),
 		];
 	}
 	get types(): readonly number[] {
@@ -66,9 +66,18 @@ class PokemonStat {
 			this.data.getUint8(TYPES_OFFSET + 1),
 		];
 	}
-	// readonly eggGroups: readonly number[];
-	// readonly expGroup: number;
-	// readonly hatchCycles: number;
+	get eggGroups(): readonly number[] {
+		return [
+			this.data.getUint8(EGG_GROUPS_OFFSET),
+			this.data.getUint8(EGG_GROUPS_OFFSET + 1),
+		];
+	}
+	get expGroup(): number {
+		return this.data.getUint8(EXP_GROUP_OFFSET);
+	}
+	get hatchCycles(): number {
+		return this.data.getUint8(HATCH_CYCLES_OFFSET);
+	}
 }
 
 export default class PokemonStats {
