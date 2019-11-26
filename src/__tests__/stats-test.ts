@@ -2,8 +2,8 @@ import PokemonStats from '../pokemon-stats';
 import { readFileSync } from 'fs';
 
 const { buffer } = readFileSync('dist/data/pokemon-stats');
-const names = JSON.parse(
-	readFileSync('dist/data/pokemon-names-en.json', 'utf-8'),
+const names = readFileSync('dist/data/pokemon-names-en.txt', 'utf-8').split(
+	'\n',
 );
 const dex = new PokemonStats(buffer, {
 	getName: index => names[index],

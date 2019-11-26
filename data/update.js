@@ -1,42 +1,56 @@
-import { writeFileSync, existsSync, mkdirSync } from "fs";
-import { sep } from "path";
-import { types } from "./types.js";
-import { sword_shield_move_info } from "./sword-shield-move-info.js";
-import { serialize as serializeTms } from "./sword-shield-tm-list.js";
-import { serialize as serializeTrs } from "./sword-shield-tr-list.js";
-import { sword_shield_ability_descriptions } from "./sword-shield-ability-descriptions.js";
-import pokemonStats, { serializeStats } from "./sword-shield-stats.js";
-import eggGroups from "./egg-groups.js";
-import experienceGroups from "./experience-groups.js";
+import { writeFileSync, existsSync, mkdirSync } from 'fs';
+import types from './types.js';
+import moves from './moves.js';
+import { serialize as serializeTms } from './moves-tm-list.js';
+import { serialize as serializeTrs } from './moves-tr-list.js';
+import abilities from './abilities.js';
+import pokemonStats, { serializeStats } from './pokemon-stats.js';
+import eggGroups from './egg-groups.js';
+import experienceGroups from './experience-groups.js';
+import { join } from 'path';
 
-const distPath = [process.cwd(), "dist"].join(sep);
-const dataDistPath = [distPath, "data"].join(sep);
+const distPath = join(process.cwd(), 'dist');
+const dataDistPath = join(distPath, 'data');
 
 if (!existsSync(distPath)) {
-  mkdirSync(distPath);
+	mkdirSync(distPath);
 }
 
 if (!existsSync(dataDistPath)) {
-  mkdirSync(dataDistPath);
+	mkdirSync(dataDistPath);
 }
 
 const writeJson = (fileName, data) =>
-  writeFileSync(
-    `${dataDistPath}${sep}${fileName}.json`,
-    JSON.stringify(data, null, "\t")
-  );
+	writeFileSync(
+		join(dataDistPath, `${fileName}.json`),
+		JSON.stringify(data, null, '\t'),
+	);
 const writeBinary = (fileName, data) =>
-  writeFileSync(`${dataDistPath}${sep}${fileName}`, data);
+	writeFileSync(join(dataDistPath, `${fileName}`), data);
 
-writeJson("types", types);
-writeJson("movements", sword_shield_move_info);
-writeBinary("tms", serializeTms());
-writeBinary("trs", serializeTrs());
-writeJson("abilities", sword_shield_ability_descriptions);
-writeJson("egg-groups", eggGroups);
-writeJson("experience-groups", experienceGroups);
-writeBinary("pokemon-stats", serializeStats());
-writeJson(
-  "pokemon-names-en",
-  pokemonStats.map(({ name }) => name)
+const writeLines = (fileName, lines) =>
+	writeFileSync(
+		join(dataDistPath, `${fileName}.txt`),
+		lines.join('\n'),
+		'utf-8',
+	);
+
+writeJson('types', types);
+writeJson('movements', moves);
+writeBinary('tms', serializeTms());
+writeBinary('trs', serializeTrs());
+writeLines(
+	'ability-names',
+	abilities.map(({ name }) => name),
+);
+writeLines(
+	'ability-descriptions',
+	abilities.map(({ description }) => description),
+);
+writeJson('egg-groups', eggGroups);
+writeJson('experience-groups', experienceGroups);
+writeBinary('pokemon-stats', serializeStats());
+writeLines(
+	'pokemon-names-en',
+	pokemonStats.map(({ name }) => name),
 );

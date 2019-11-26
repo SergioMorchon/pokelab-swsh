@@ -11,7 +11,7 @@
 		"data:update": "node --experimental-modules ./data/update.js",
 		"test": "jest",
 		"build": "tsc -p src",
-		"prettier": "prettier \"**/*.ts\" \"**/*.json\" \"**/*.yml\" \"**/*.md\"",
+		"prettier": "prettier \"**/*.ts\" \"**/*.js\" \"**/*.json\" \"**/*.yml\" \"**/*.md\"",
 		"lint": "eslint src data/**/*.js",
 		"check-code": "npm run lint && npm run prettier -- -l",
 		"fix-code": "npm run lint -- --fix src/** && npm run prettier -- --write",
