@@ -19,12 +19,40 @@ import {
   SPECIAL_DEFENSE,
   SPEED
 } from "./stat";
+import { read } from "fs";
 
-interface IPokemonStat {
-  readonly nationalId: number;
-  readonly galarId: number | null;
-  readonly baseStats: readonly number[];
-  readonly evYields: readonly number[];
+type Texts = {
+  getName(index: number): string;
+  getDescription(index: number): string;
+};
+
+class PokemonStat {
+  private readonly index: number;
+  private readonly data: DataView;
+  private readonly texts: Texts;
+  constructor(index: number, data: DataView, texts: Texts) {
+    this.index = index;
+    this.data = data;
+    this.texts = texts;
+  }
+  public get name(): string {
+    return this.texts.getName(this.index);
+  }
+  public get description(): string {
+    return this.texts.getDescription(this.index);
+  }
+  public get nationalId(): number {
+    return this.data.getUint16(NATIONAL_ID_OFFSET, true);
+  }
+  public get galarId(): number {
+    return this.data.getUint16(GALAR_ID_OFFSET, true) || null;
+  }
+  public get baseStats(): readonly number[] {
+    return ALL_STATS.map(stat => this.data.getUint8(BASE_STATS_OFFSET + stat));
+  }
+  public get evYields(): readonly number[] {
+    return ALL_STATS.map(stat => this.data.getUint8(EV_YIELD_OFFSET + stat));
+  }
   // readonly abilities: readonly number[];
   // readonly types: readonly number[];
   // readonly eggGroups: readonly number[];
@@ -32,14 +60,31 @@ interface IPokemonStat {
   // readonly hatchCycles: number;
 }
 
-export const init = (buffer: ArrayBuffer) => ({
-  get(index: number): IPokemonStat {
-    const data = new DataView(buffer, index * BLOCK_SIZE);
-    return {
-      nationalId: data.getUint16(NATIONAL_ID_OFFSET, true),
-      galarId: data.getUint16(GALAR_ID_OFFSET, true) || null,
-      baseStats: ALL_STATS.map(stat => data.getUint8(BASE_STATS_OFFSET + stat)),
-      evYields: ALL_STATS.map(stat => data.getUint8(EV_YIELD_OFFSET + stat))
-    };
+export default class PokemonStats {
+  private readonly buffer: ArrayBuffer;
+  private readonly texts: Texts;
+  constructor(buffer: ArrayBuffer, texts: Texts) {
+    this.buffer = buffer;
+    this.texts = texts;
   }
-});
+  get(index: number) {
+    return new PokemonStat(
+      index,
+      new DataView(this.buffer, index * BLOCK_SIZE),
+      this.texts
+    );
+  }
+  get length() {
+    return this.buffer.byteLength / BLOCK_SIZE;
+  }
+  filter(predicate: (pokemonStat: PokemonStat) => boolean): readonly number[] {
+    const result: number[] = [];
+    for (let i = 0; i < this.length; i++) {
+      if (predicate(this.get(i))) {
+        result.push(i);
+      }
+    }
+
+    return result;
+  }
+}
