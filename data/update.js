@@ -38,7 +38,7 @@ const writeLines = (fileName, lines) =>
 const writeTypeScript = (fileName, lines) =>
 	writeFileSync(
 		join(process.cwd(), 'src', `${fileName}.ts`),
-		lines.join('\n'),
+		lines.join('\n') + '\n',
 		'utf-8',
 	);
 
