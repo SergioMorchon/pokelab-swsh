@@ -97,14 +97,4 @@ export default class PokemonStats {
 	get length() {
 		return this.buffer.byteLength / BLOCK_SIZE;
 	}
-	filter(predicate: (pokemonStat: PokemonStat) => boolean): readonly number[] {
-		const result: number[] = [];
-		for (let i = 0; i < this.length; i++) {
-			if (predicate(this.get(i))) {
-				result.push(i);
-			}
-		}
-
-		return result;
-	}
 }
