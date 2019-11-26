@@ -7,6 +7,7 @@ import abilities from './abilities.js';
 import pokemonStats, { serializeStats } from './pokemon-stats.js';
 import eggGroups from './egg-groups.js';
 import experienceGroups from './experience-groups.js';
+import serializeEnum from './serialize-enum.js';
 import { join } from 'path';
 
 const distPath = join(process.cwd(), 'dist');
@@ -34,23 +35,36 @@ const writeLines = (fileName, lines) =>
 		lines.join('\n'),
 		'utf-8',
 	);
+const writeTypeScript = (fileName, lines) =>
+	writeFileSync(
+		join(process.cwd(), 'src', `${fileName}.ts`),
+		lines.join('\n'),
+		'utf-8',
+	);
 
-writeJson('types', types);
+// TODO: split JSON to appropiate formats
 writeJson('movements', moves);
-writeBinary('tms', serializeTms());
-writeBinary('trs', serializeTrs());
+
+// Binaries
+writeBinary('moves-tms', serializeTms());
+writeBinary('moves-trs', serializeTrs());
+writeBinary('pokemon-stats', serializeStats());
+
+// Texts
 writeLines(
-	'ability-names',
+	'ability-names-en',
 	abilities.map(({ name }) => name),
 );
 writeLines(
-	'ability-descriptions',
+	'ability-descriptions-en',
 	abilities.map(({ description }) => description),
 );
-writeJson('egg-groups', eggGroups);
-writeJson('experience-groups', experienceGroups);
-writeBinary('pokemon-stats', serializeStats());
 writeLines(
 	'pokemon-names-en',
 	pokemonStats.map(({ name }) => name),
 );
+
+// Enums
+writeTypeScript('types', serializeEnum(types));
+writeTypeScript('egg-groups', serializeEnum(eggGroups));
+writeTypeScript('experience-groups', serializeEnum(experienceGroups));

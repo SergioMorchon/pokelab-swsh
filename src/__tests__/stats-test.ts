@@ -1,4 +1,5 @@
 import PokemonStats from '../pokemon-stats';
+import * as Types from '../types';
 import { readFileSync } from 'fs';
 
 const { buffer } = readFileSync('dist/data/pokemon-stats');
@@ -19,6 +20,15 @@ const dex = new PokemonStats(buffer, {
 			galarId: null,
 			baseStats: [45, 49, 49, 65, 65, 45],
 			evYields: [0, 0, 0, 1, 0, 0],
+			types: [Types.Grass, Types.Poison],
+			abilities: [
+				// Overgrow
+				64,
+				// Overgrow
+				64,
+				// Chlorophyll
+				33,
+			],
 		},
 	},
 	{
@@ -29,6 +39,15 @@ const dex = new PokemonStats(buffer, {
 			galarId: 212,
 			baseStats: [78, 52, 60, 63, 65, 23],
 			evYields: [1, 0, 0, 0, 0, 0],
+			types: [Types.Fairy, Types.Fairy],
+			abilities: [
+				// Healer
+				130,
+				// Healer
+				130,
+				// Aroma Veil
+				164,
+			],
 		},
 	},
 ].forEach(({ index, expectedStats }) =>

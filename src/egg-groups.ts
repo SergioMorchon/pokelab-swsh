@@ -1,0 +1,15 @@
+export const Monster = 0;
+export const Water1 = 1;
+export const Bug = 2;
+export const Flying = 3;
+export const Field = 4;
+export const Fairy = 5;
+export const Grass = 6;
+export const HumanLike = 7;
+export const Water3 = 8;
+export const Mineral = 9;
+export const Amorphous = 10;
+export const Water2 = 11;
+export const Ditto = 12;
+export const Dragon = 13;
+export const Undiscovered = 14;

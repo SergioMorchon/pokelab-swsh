@@ -53,8 +53,19 @@ class PokemonStat {
 	get evYields(): readonly number[] {
 		return ALL_STATS.map(stat => this.data.getUint8(EV_YIELD_OFFSET + stat));
 	}
-	// readonly abilities: readonly number[];
-	// readonly types: readonly number[];
+	get abilities(): readonly number[] {
+		return [
+			this.data.getUint16(ABILITIES_OFFSET),
+			this.data.getUint16(ABILITIES_OFFSET + 2),
+			this.data.getUint16(ABILITIES_OFFSET + 4),
+		];
+	}
+	get types(): readonly number[] {
+		return [
+			this.data.getUint8(TYPES_OFFSET),
+			this.data.getUint8(TYPES_OFFSET + 1),
+		];
+	}
 	// readonly eggGroups: readonly number[];
 	// readonly expGroup: number;
 	// readonly hatchCycles: number;

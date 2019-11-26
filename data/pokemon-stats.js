@@ -176,9 +176,11 @@ export const serializeStats = () =>
 			pkm.abilities.forEach((ability, index) => {
 				data.setUint16(ABILITIES_OFFSET + index * 2, ability);
 			});
-			pkm.types.forEach((type, index) => {
-				data.setUint8(TYPES_OFFSET + index, type);
-			});
+			data.setUint8(TYPES_OFFSET, pkm.types[0]);
+			data.setUint8(
+				TYPES_OFFSET + 1,
+				pkm.types.length === 2 ? pkm.types[1] : pkm.types[0],
+			);
 			pkm.eggGroups.forEach((group, index) => {
 				data.setUint8(EGG_GROUPS_OFFSET + index, group);
 			});
