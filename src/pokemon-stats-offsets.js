@@ -13,9 +13,9 @@ export const TYPES_OFFSET = ABILITIES_OFFSET + 3 * 2;
 /** 0x14 */
 export const EGG_GROUPS_OFFSET = TYPES_OFFSET + 2;
 /** 0x16 */
-export const EXP_GROUP_OFFSET = EGG_GROUPS_OFFSET + 2;
-/** 0x17 */
+export const EXP_GROUP_OFFSET = EGG_GROUPS_OFFSET + 1;
+/** 0x16 */
 export const HATCH_CYCLES_OFFSET = EXP_GROUP_OFFSET + 1;
 
-/** 0x18 */
+/** 0x17 */
 export const BLOCK_SIZE = HATCH_CYCLES_OFFSET + 1;

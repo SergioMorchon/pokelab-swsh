@@ -183,7 +183,11 @@ export const serializeStats = () =>
 				TYPES_OFFSET + 1,
 				pkm.types.length === 2 ? pkm.types[1] : pkm.types[0],
 			);
-			data.setUint8(EGG_GROUPS_OFFSET, pkm.eggGroups[0]);
+			data.setUint8(
+				EGG_GROUPS_OFFSET,
+				(pkm.eggGroups[0] << 4) |
+					(pkm.eggGroups.length === 2 ? pkm.eggGroups[1] : pkm.eggGroups[0]),
+			);
 			data.setUint8(
 				EGG_GROUPS_OFFSET + 1,
 				pkm.eggGroups.length === 2 ? pkm.eggGroups[1] : pkm.eggGroups[0],

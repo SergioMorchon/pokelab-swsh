@@ -70,10 +70,8 @@ class PokemonStat {
 		];
 	}
 	get eggGroups(): readonly number[] {
-		return [
-			this.data.getUint8(EGG_GROUPS_OFFSET),
-			this.data.getUint8(EGG_GROUPS_OFFSET + 1),
-		];
+		const eggGroupsRaw = this.data.getUint8(EGG_GROUPS_OFFSET);
+		return [(eggGroupsRaw & 0xf0) >> 4, eggGroupsRaw & 0x0f];
 	}
 	get expGroup(): number {
 		return this.data.getUint8(EXP_GROUP_OFFSET);
