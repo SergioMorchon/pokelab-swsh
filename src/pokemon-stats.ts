@@ -10,92 +10,62 @@ import {
 	HATCH_CYCLES_OFFSET,
 	BLOCK_SIZE,
 } from './pokemon-stats-offsets';
-import {
-	ALL_STATS,
-	HP,
-	ATTACK,
-	DEFENSE,
-	SPECIAL_ATTACK,
-	SPECIAL_DEFENSE,
-	SPEED,
-} from './stat';
-import { read } from 'fs';
+import { ALL_STATS } from './stat';
 
 type Texts = {
 	getName(index: number): string;
 	getDescription(index: number): string;
 };
 
-class PokemonStat {
-	private readonly index: number;
-	private readonly data: DataView;
-	private readonly texts: Texts;
-	constructor(index: number, data: DataView, texts: Texts) {
-		this.index = index;
-		this.data = data;
-		this.texts = texts;
-	}
+const pokemonStat = (index: number, data: DataView, texts: Texts) => ({
 	get name(): string {
-		return this.texts.getName(this.index);
-	}
+		return texts.getName(index);
+	},
 	get description(): string {
-		return this.texts.getDescription(this.index);
-	}
+		return texts.getDescription(index);
+	},
 	get nationalId(): number {
-		return this.data.getUint16(NATIONAL_ID_OFFSET, true);
-	}
+		return data.getUint16(NATIONAL_ID_OFFSET, true);
+	},
 	get galarId(): number {
-		return this.data.getUint16(GALAR_ID_OFFSET, true) || null;
-	}
+		return data.getUint16(GALAR_ID_OFFSET, true) || null;
+	},
 	get baseStats(): readonly number[] {
-		return ALL_STATS.map(stat => this.data.getUint8(BASE_STATS_OFFSET + stat));
-	}
+		return ALL_STATS.map(stat => data.getUint8(BASE_STATS_OFFSET + stat));
+	},
 	get evYields(): readonly number[] {
-		const evYieldsRaw = this.data.getUint16(EV_YIELD_OFFSET, true);
+		const evYieldsRaw = data.getUint16(EV_YIELD_OFFSET, true);
 		return ALL_STATS.map(
 			stat => (evYieldsRaw & (0b11 << (stat * 2))) >> (stat * 2),
 		).reverse();
-	}
+	},
 	get abilities(): readonly number[] {
 		return [
-			this.data.getUint16(ABILITIES_OFFSET, true),
-			this.data.getUint16(ABILITIES_OFFSET + 2, true),
-			this.data.getUint16(ABILITIES_OFFSET + 4, true),
+			data.getUint16(ABILITIES_OFFSET, true),
+			data.getUint16(ABILITIES_OFFSET + 2, true),
+			data.getUint16(ABILITIES_OFFSET + 4, true),
 		];
-	}
+	},
 	get types(): readonly number[] {
-		return [
-			this.data.getUint8(TYPES_OFFSET),
-			this.data.getUint8(TYPES_OFFSET + 1),
-		];
-	}
+		return [data.getUint8(TYPES_OFFSET), data.getUint8(TYPES_OFFSET + 1)];
+	},
 	get eggGroups(): readonly number[] {
-		const eggGroupsRaw = this.data.getUint8(EGG_GROUPS_OFFSET);
+		const eggGroupsRaw = data.getUint8(EGG_GROUPS_OFFSET);
 		return [(eggGroupsRaw & 0xf0) >> 4, eggGroupsRaw & 0x0f];
-	}
+	},
 	get expGroup(): number {
-		return this.data.getUint8(EXP_GROUP_OFFSET);
-	}
+		return data.getUint8(EXP_GROUP_OFFSET);
+	},
 	get hatchCycles(): number {
-		return this.data.getUint8(HATCH_CYCLES_OFFSET);
-	}
-}
+		return data.getUint8(HATCH_CYCLES_OFFSET);
+	},
+});
 
-export default class PokemonStats {
-	private readonly buffer: ArrayBuffer;
-	private readonly texts: Texts;
-	constructor(buffer: ArrayBuffer, texts: Texts) {
-		this.buffer = buffer;
-		this.texts = texts;
-	}
+export default (buffer: ArrayBuffer, texts: Texts) => ({
 	get(index: number) {
-		return new PokemonStat(
-			index,
-			new DataView(this.buffer, index * BLOCK_SIZE),
-			this.texts,
-		);
-	}
+		return pokemonStat(index, new DataView(buffer, index * BLOCK_SIZE), texts);
+	},
 	get length() {
-		return this.buffer.byteLength / BLOCK_SIZE;
-	}
-}
+		return buffer.byteLength / BLOCK_SIZE;
+	},
+});

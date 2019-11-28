@@ -1,4 +1,4 @@
-import PokemonStats from '../pokemon-stats';
+import pokemonStats from '../pokemon-stats';
 import * as Types from '../types';
 import * as EggGroups from '../egg-groups';
 import * as ExpGroups from '../experience-groups';
@@ -8,7 +8,7 @@ const { buffer } = readFileSync('dist/data/pokemon-stats');
 const names = readFileSync('dist/data/pokemon-names-en.txt', 'utf-8').split(
 	'\n',
 );
-const dex = new PokemonStats(buffer, {
+const dex = pokemonStats(buffer, {
 	getName: index => names[index],
 	getDescription: () => '',
 });
