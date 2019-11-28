@@ -62,6 +62,8 @@ const pokemonStat = (index: number, data: DataView, texts: Texts) => ({
 	},
 });
 
+export type PokemonStats = ReturnType<typeof pokemonStat>;
+
 export default (buffer: ArrayBuffer, texts: Texts) => ({
 	get(index: number) {
 		return pokemonStat(index, dataView(buffer, index * BLOCK_SIZE), texts);
