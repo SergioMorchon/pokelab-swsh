@@ -1,6 +1,14 @@
 {
-	"name": "pokelab",
+	"name": "@sergiomorchon/pokelab-sw",
 	"version": "1.0.0",
+	"author": {
+		"name": "Sergio Morchón Poveda",
+		"email": "sergio.morchon@outlook.com"
+	},
+	"repository": {
+		"url": "https://github.com/SergioMorchon/pokelab-sw",
+		"type": "git"
+	},
 	"description": "",
 	"main": "index.js",
 	"type": "module",
