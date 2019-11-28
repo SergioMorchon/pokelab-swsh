@@ -11,6 +11,7 @@ import {
 	BLOCK_SIZE,
 } from './pokemon-stats-offsets';
 import { ALL_STATS } from './stat';
+import dataView, { DataView } from './data-view';
 
 type Texts = {
 	getName(index: number): string;
@@ -63,7 +64,7 @@ const pokemonStat = (index: number, data: DataView, texts: Texts) => ({
 
 export default (buffer: ArrayBuffer, texts: Texts) => ({
 	get(index: number) {
-		return pokemonStat(index, new DataView(buffer, index * BLOCK_SIZE), texts);
+		return pokemonStat(index, dataView(buffer, index * BLOCK_SIZE), texts);
 	},
 	get length() {
 		return buffer.byteLength / BLOCK_SIZE;
