@@ -58,11 +58,11 @@ const dex = new PokemonStats(buffer, {
 			hatchCycles: 20,
 		},
 	},
-].forEach(({ index, expectedStats }) =>
-	test(`get(${index})`, () => {
-		const pokemonStats = dex.get(index);
-		Object.keys(expectedStats).forEach(key => {
-			expect(pokemonStats[key]).toStrictEqual(expectedStats[key]);
+].forEach(({ index, expectedStats }) => {
+	const pokemonStats = dex.get(index);
+	Object.keys(expectedStats).forEach(property => {
+		test(`get(${index}).${property}`, () => {
+			expect(pokemonStats[property]).toStrictEqual(expectedStats[property]);
 		});
-	}),
-);
+	});
+});

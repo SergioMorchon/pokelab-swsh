@@ -51,7 +51,10 @@ class PokemonStat {
 		return ALL_STATS.map(stat => this.data.getUint8(BASE_STATS_OFFSET + stat));
 	}
 	get evYields(): readonly number[] {
-		return ALL_STATS.map(stat => this.data.getUint8(EV_YIELD_OFFSET + stat));
+		const evYieldsRaw = this.data.getUint16(EV_YIELD_OFFSET, true);
+		return ALL_STATS.map(
+			stat => (evYieldsRaw & (0b11 << (stat * 2))) >> (stat * 2),
+		).reverse();
 	}
 	get abilities(): readonly number[] {
 		return [

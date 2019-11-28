@@ -170,9 +170,11 @@ export const serializeStats = () =>
 			pkm.baseStats.forEach((stat, index) => {
 				data.setUint8(BASE_STATS_OFFSET + index, stat);
 			});
-			pkm.evYield.forEach((ev, index) => {
-				data.setUint8(EV_YIELD_OFFSET + index, ev);
-			});
+			data.setUint16(
+				EV_YIELD_OFFSET,
+				pkm.evYield.reduce((acc, ev) => (acc << 2) | ev, 0),
+				true,
+			);
 			pkm.abilities.forEach((ability, index) => {
 				data.setUint16(ABILITIES_OFFSET + index * 2, ability, true);
 			});
