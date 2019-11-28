@@ -18,13 +18,12 @@
 	"scripts": {
 		"data:update": "node --experimental-modules ./data/update.js",
 		"test": "jest",
-		"build": "tsc -p src",
+		"build": "npm run data:update && tsc -p src",
 		"prettier": "prettier \"**/*.ts\" \"**/*.js\" \"**/*.json\" \"**/*.yml\" \"**/*.md\"",
 		"lint": "eslint src data/**/*.js",
 		"check-code": "npm run lint && npm run prettier -- -l",
 		"fix-code": "npm run lint -- --fix src/** && npm run prettier -- --write",
-		"postinstall": "npm run data:update",
-		"prepublishOnly": "npm run data:update && npm run check-code && npm run build && npm test"
+		"prepublishOnly": "npm run check-code && npm run build && npm test"
 	},
 	"devDependencies": {
 		"@babel/core": "^7.7.4",
