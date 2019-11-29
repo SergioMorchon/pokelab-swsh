@@ -48,11 +48,15 @@ const pokemonStat = (index: number, data: DataView, texts: Texts) => ({
 		];
 	},
 	get types(): readonly number[] {
-		return [data.getUint8(TYPES_OFFSET), data.getUint8(TYPES_OFFSET + 1)];
+		const t1 = data.getUint8(TYPES_OFFSET);
+		const t2 = data.getUint8(TYPES_OFFSET + 1);
+		return t1 !== t2 ? [t1, t2] : [t1];
 	},
 	get eggGroups(): readonly number[] {
 		const eggGroupsRaw = data.getUint8(EGG_GROUPS_OFFSET);
-		return [(eggGroupsRaw & 0xf0) >> 4, eggGroupsRaw & 0x0f];
+		const g1 = (eggGroupsRaw & 0xf0) >> 4;
+		const g2 = eggGroupsRaw & 0x0f;
+		return g1 !== g2 ? [g1, g2] : [g1];
 	},
 	get expGroup(): number {
 		return data.getUint8(EXP_GROUP_OFFSET);

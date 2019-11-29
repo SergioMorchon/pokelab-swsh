@@ -44,7 +44,7 @@ const dex = pokemonStats(buffer, {
 			galarId: 212,
 			baseStats: [78, 52, 60, 63, 65, 23],
 			evYields: [1, 0, 0, 0, 0, 0],
-			types: [Types.Fairy, Types.Fairy],
+			types: [Types.Fairy],
 			abilities: [
 				// Healer
 				130,
@@ -53,7 +53,7 @@ const dex = pokemonStats(buffer, {
 				// Aroma Veil
 				164,
 			],
-			eggGroups: [EggGroups.Fairy, EggGroups.Fairy],
+			eggGroups: [EggGroups.Fairy],
 			expGroup: ExpGroups.MediumFast,
 			hatchCycles: 20,
 		},
