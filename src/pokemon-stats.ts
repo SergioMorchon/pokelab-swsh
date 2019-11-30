@@ -1,5 +1,4 @@
 import {
-	NATIONAL_ID_OFFSET,
 	GALAR_ID_OFFSET,
 	BASE_STATS_OFFSET,
 	EV_YIELD_OFFSET,
@@ -25,26 +24,23 @@ const pokemonStat = (index: number, data: DataView, texts: Texts) => ({
 	get description(): string {
 		return texts.getDescription(index);
 	},
-	get nationalId(): number {
-		return data.getUint16(NATIONAL_ID_OFFSET, true);
-	},
 	get galarId(): number {
-		return data.getUint16(GALAR_ID_OFFSET, true) || null;
+		return data.getUint16(GALAR_ID_OFFSET) || null;
 	},
 	get baseStats(): readonly number[] {
 		return ALL_STATS.map(stat => data.getUint8(BASE_STATS_OFFSET + stat));
 	},
 	get evYields(): readonly number[] {
-		const evYieldsRaw = data.getUint16(EV_YIELD_OFFSET, true);
+		const evYieldsRaw = data.getUint16(EV_YIELD_OFFSET);
 		return ALL_STATS.map(
 			stat => (evYieldsRaw & (0b11 << (stat * 2))) >> (stat * 2),
 		).reverse();
 	},
 	get abilities(): readonly number[] {
 		return [
-			data.getUint16(ABILITIES_OFFSET, true),
-			data.getUint16(ABILITIES_OFFSET + 2, true),
-			data.getUint16(ABILITIES_OFFSET + 4, true),
+			data.getUint16(ABILITIES_OFFSET),
+			data.getUint16(ABILITIES_OFFSET + 2),
+			data.getUint16(ABILITIES_OFFSET + 4),
 		];
 	},
 	get types(): readonly number[] {

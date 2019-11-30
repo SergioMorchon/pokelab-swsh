@@ -18,7 +18,6 @@ const dex = pokemonStats(buffer, {
 		index: 0,
 		expectedStats: {
 			name: 'Bulbasaur',
-			nationalId: 1,
 			galarId: null,
 			baseStats: [45, 49, 49, 65, 65, 45],
 			evYields: [0, 0, 0, 1, 0, 0],
@@ -40,7 +39,6 @@ const dex = pokemonStats(buffer, {
 		index: 320,
 		expectedStats: {
 			name: 'Spritzee',
-			nationalId: 682,
 			galarId: 212,
 			baseStats: [78, 52, 60, 63, 65, 23],
 			evYields: [1, 0, 0, 0, 0, 0],

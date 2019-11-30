@@ -5,7 +5,6 @@ import { getTypeByName } from './types.js';
 import { getEggGroupByName } from './egg-groups.js';
 import { getExperienceGroupByName } from './experience-groups.js';
 import {
-	NATIONAL_ID_OFFSET,
 	GALAR_ID_OFFSET,
 	BASE_STATS_OFFSET,
 	EV_YIELD_OFFSET,
@@ -17,6 +16,8 @@ import {
 	BLOCK_SIZE,
 } from '../src/pokemon-stats-offsets.js';
 
+const ids = new Set([]);
+
 const pkms = readFileSync('./data/raw/sword_shield_stats.txt', 'utf-8')
 	.split('======')
 	.filter(Boolean)
@@ -25,8 +26,11 @@ const pkms = readFileSync('./data/raw/sword_shield_stats.txt', 'utf-8')
 		const pkm = {};
 		const [header, galarDex, baseStats, evYield, abilities, type] = lines;
 		lines = lines.slice(6);
-		const [nationalId, name] = header.split(' - ');
-		pkm.nationalId = Number(nationalId);
+		const [id, name] = header.split(' - ');
+		console.assert(!ids.has(id), `Duplicated pokemon ID ${id}`);
+		ids.add(id);
+
+		pkm.id = Number(id);
 		pkm.name = name.split(/ \(Stage: \d+\)/)[0];
 		pkm.galarDex =
 			galarDex === 'Galar Dex: Foreign'
@@ -165,7 +169,6 @@ export const serializeStats = () =>
 	new DataView(
 		pkms.reduce((buffer, pkm, index) => {
 			const data = new DataView(buffer, index * BLOCK_SIZE, BLOCK_SIZE);
-			data.setUint16(NATIONAL_ID_OFFSET, pkm.nationalId, true);
 			data.setUint16(GALAR_ID_OFFSET, pkm.galarDex, true);
 			pkm.baseStats.forEach((stat, index) => {
 				data.setUint8(BASE_STATS_OFFSET + index, stat);
