@@ -24,7 +24,7 @@ const pokemonStat = (index: number, data: DataView, texts: Texts) => ({
 	get description(): string {
 		return texts.getDescription(index);
 	},
-	get galarId(): number {
+	get galarId(): number | null {
 		return data.getUint16(GALAR_ID_OFFSET) || null;
 	},
 	get baseStats(): readonly number[] {
