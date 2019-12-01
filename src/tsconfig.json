@@ -5,7 +5,8 @@
 		"moduleResolution": "node",
 		"allowJs": true,
 		"outDir": "../dist",
-		"declaration": true
+		"declaration": true,
+		"strict": true
 	},
 	"exclude": ["__tests__"]
 }
