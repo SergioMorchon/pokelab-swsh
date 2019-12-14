@@ -10,14 +10,14 @@ import {
 	BLOCK_SIZE,
 } from './pokemon-stats-offsets';
 import { ALL_STATS } from './stat';
-import dataView, { DataView } from './data-view';
+import { getUint16 } from './data-view';
 
 type Texts = {
 	getName(index: number): string;
 	getDescription(index: number): string;
 };
 
-const pokemonStat = (index: number, data: DataView, texts: Texts) => ({
+const pokemonStats = (index: number, data: Uint8Array, texts: Texts) => ({
 	get name(): string {
 		return texts.getName(index);
 	},
@@ -25,50 +25,52 @@ const pokemonStat = (index: number, data: DataView, texts: Texts) => ({
 		return texts.getDescription(index);
 	},
 	get galarId(): number | null {
-		return data.getUint16(GALAR_ID_OFFSET) || null;
+		return getUint16(data, GALAR_ID_OFFSET) || null;
 	},
 	get baseStats(): readonly number[] {
-		return ALL_STATS.map(stat => data.getUint8(BASE_STATS_OFFSET + stat));
+		return ALL_STATS.map(stat => data[BASE_STATS_OFFSET + stat]);
 	},
 	get evYields(): readonly number[] {
-		const evYieldsRaw = data.getUint16(EV_YIELD_OFFSET);
+		const evYieldsRaw = getUint16(data, EV_YIELD_OFFSET);
 		return ALL_STATS.map(
 			stat => (evYieldsRaw & (0b11 << (stat * 2))) >> (stat * 2),
 		).reverse();
 	},
 	get abilities(): readonly number[] {
 		return [
-			data.getUint16(ABILITIES_OFFSET),
-			data.getUint16(ABILITIES_OFFSET + 2),
-			data.getUint16(ABILITIES_OFFSET + 4),
+			getUint16(data, ABILITIES_OFFSET),
+			getUint16(data, ABILITIES_OFFSET + 2),
+			getUint16(data, ABILITIES_OFFSET + 4),
 		];
 	},
 	get types(): readonly number[] {
-		const t1 = data.getUint8(TYPES_OFFSET);
-		const t2 = data.getUint8(TYPES_OFFSET + 1);
+		const t1 = data[TYPES_OFFSET];
+		const t2 = data[TYPES_OFFSET + 1];
 		return t1 !== t2 ? [t1, t2] : [t1];
 	},
 	get eggGroups(): readonly number[] {
-		const eggGroupsRaw = data.getUint8(EGG_GROUPS_OFFSET);
+		const eggGroupsRaw = data[EGG_GROUPS_OFFSET];
 		const g1 = (eggGroupsRaw & 0xf0) >> 4;
 		const g2 = eggGroupsRaw & 0x0f;
 		return g1 !== g2 ? [g1, g2] : [g1];
 	},
 	get expGroup(): number {
-		return data.getUint8(EXP_GROUP_OFFSET);
+		return data[EXP_GROUP_OFFSET];
 	},
 	get hatchCycles(): number {
-		return data.getUint8(HATCH_CYCLES_OFFSET);
+		return data[HATCH_CYCLES_OFFSET];
 	},
 });
 
-export type PokemonStats = ReturnType<typeof pokemonStat>;
+export type PokemonStats = ReturnType<typeof pokemonStats>;
 
-export default (buffer: ArrayBuffer, texts: Texts) => ({
+export default (bytes: Uint8Array, texts: Texts) => ({
 	get(index: number) {
-		return pokemonStat(index, dataView(buffer, index * BLOCK_SIZE), texts);
+		const start = index * BLOCK_SIZE;
+		const end = start + BLOCK_SIZE;
+		return pokemonStats(index, bytes.subarray(start, end), texts);
 	},
 	get length() {
-		return buffer.byteLength / BLOCK_SIZE;
+		return bytes.length / BLOCK_SIZE;
 	},
 });

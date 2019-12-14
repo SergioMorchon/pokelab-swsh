@@ -13,11 +13,15 @@ const abilities = readFileSync(
 
 export default abilities;
 
+/** @type {Object<string, number>} */
 const byName = abilities.reduce((acc, { name }, index) => {
 	acc[name] = index;
 	return acc;
 }, {});
 
+/**
+ * @param {string} name
+ */
 export const getAbilityByName = name => {
 	console.assert(name in byName, `Ability name '${name}' exists`);
 	return byName[name];

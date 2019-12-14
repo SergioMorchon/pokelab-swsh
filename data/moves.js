@@ -123,11 +123,15 @@ const moves = readFileSync('./data/raw/sword_shield_move_info.txt', 'utf-8')
 
 export default moves;
 
+/** @type {Object<string, number>} */
 const byName = Object.entries(moves).reduce((acc, [key, { name }]) => {
 	acc[name] = Number(key);
 	return acc;
 }, {});
 
+/**
+ * @param {string} name
+ */
 export const getMoveByName = name => {
 	console.assert(name in byName, `Move name '${name}' exists`);
 	return byName[name];

@@ -8,7 +8,7 @@ const { buffer } = readFileSync('dist/data/pokemon-stats');
 const names = readFileSync('dist/data/pokemon-names-en.txt', 'utf-8').split(
 	'\n',
 );
-const dex = pokemonStats(buffer, {
+const dex = pokemonStats(new Uint8Array(buffer), {
 	getName: index => names[index],
 	getDescription: () => '',
 });
