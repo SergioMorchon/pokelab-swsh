@@ -56,6 +56,27 @@ const dex = pokemonStats(new Uint8Array(buffer), {
 			hatchCycles: 20,
 		},
 	},
+	{
+		index: 524,
+		expectedStats: {
+			name: 'Slowpoke Galar',
+			galarId: null,
+			baseStats: [90, 65, 65, 40, 40, 15],
+			evYields: [1, 0, 0, 0, 0, 0],
+			types: [Types.Psychic],
+			abilities: [
+				// Gluttony
+				81,
+				// Own Tempo
+				19,
+				// Regenerator
+				143,
+			],
+			eggGroups: [EggGroups.Monster, EggGroups.Water1],
+			expGroup: ExpGroups.MediumFast,
+			hatchCycles: 20,
+		},
+	},
 ].forEach(({ index, expectedStats }) => {
 	const pokemonStats = dex.get(index);
 	Object.keys(expectedStats).forEach(property => {

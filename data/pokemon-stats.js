@@ -16,152 +16,181 @@ import {
 	BLOCK_SIZE,
 } from '../src/pokemon-stats-offsets.js';
 
+/** @typedef {import("./pokemon").Pokemon} Pokemon */
+
+/** @type {Pokemon[]} */
+const extraPkm = [
+	{
+		name: 'Slowpoke Galar',
+		id: 79,
+		galarDex: null,
+		abilities: ['Gluttony', 'Own Tempo', 'Regenerator'].map(getAbilityByName),
+		baseStats: [90, 65, 65, 40, 40, 15],
+		evYield: [1, 0, 0, 0, 0, 0],
+		types: ['Psychic'].map(getTypeByName),
+		eggGroups: ['Monster', 'Water1'].map(getEggGroupByName),
+		expGroup: getExperienceGroupByName('MediumFast'),
+		hatchCycles: 20,
+
+		// TODO:
+		eggMoves: [],
+		items: [],
+		levelUpMoves: [],
+		tms: [],
+		trs: [],
+	},
+];
+
 const ids = new Set([]);
 
-const pkms = readFileSync('./data/raw/sword_shield_stats.txt', 'utf-8')
-	.split('======')
-	.filter(Boolean)
-	.map(s => {
-		let lines = s.trim().split(/\r?\n/);
-		const pkm = {};
-		const [header, galarDex, baseStats, evYield, abilities, type] = lines;
-		lines = lines.slice(6);
-		const [id, name] = header.split(' - ');
-		console.assert(!ids.has(id), `Duplicated pokemon ID ${id}`);
-		ids.add(id);
+/** @type {Pokemon[]} */
+const pkms = [
+	...readFileSync('./data/raw/sword_shield_stats.txt', 'utf-8')
+		.split('======')
+		.filter(Boolean)
+		.map(s => {
+			let lines = s.trim().split(/\r?\n/);
+			const pkm = {};
+			const [header, galarDex, baseStats, evYield, abilities, type] = lines;
+			lines = lines.slice(6);
+			const [id, name] = header.split(' - ');
+			console.assert(!ids.has(id), `Duplicated pokemon ID ${id}`);
+			ids.add(id);
 
-		pkm.id = Number(id);
-		pkm.name = name.split(/ \(Stage: \d+\)/)[0];
-		pkm.galarDex =
-			galarDex === 'Galar Dex: Foreign'
-				? null
-				: Number(galarDex.replace('Galar Dex: #', ''));
-		pkm.baseStats = baseStats
-			.replace('Base Stats: ', '')
-			.replace(/ \(BST: \d+\)/, '')
-			.split('.')
-			.slice(0, 6)
-			.map(Number);
-		pkm.evYield = evYield
-			.replace('EV Yield: ', '')
-			.split('.')
-			.map(Number);
-		pkm.abilities = abilities
-			.replace('Abilities: ', '')
-			.split(' | ')
-			.reduce((acc, s) => {
-				const match = /(.*) \((.)\)/.exec(s);
-				const index = match[2] === 'H' ? 2 : Number(match[2]) - 1;
-				acc[index] = getAbilityByName(match[1]);
-				return acc;
-			}, new Array(3));
-		pkm.types = type
-			.replace('Type: ', '')
-			.split(' / ')
-			.map(getTypeByName);
-		const items = {
-			items: lines
-				.filter(s => s.startsWith('Item '))
+			pkm.id = Number(id);
+			pkm.name = name.split(/ \(Stage: \d+\)/)[0];
+			pkm.galarDex =
+				galarDex === 'Galar Dex: Foreign'
+					? null
+					: Number(galarDex.replace('Galar Dex: #', ''));
+			pkm.baseStats = baseStats
+				.replace('Base Stats: ', '')
+				.replace(/ \(BST: \d+\)/, '')
+				.split('.')
+				.slice(0, 6)
+				.map(Number);
+			pkm.evYield = evYield
+				.replace('EV Yield: ', '')
+				.split('.')
+				.map(Number);
+			pkm.abilities = abilities
+				.replace('Abilities: ', '')
+				.split(' | ')
 				.reduce((acc, s) => {
-					const [, percentage, name] = /Item \d \((\d+)%\): (.*)/.exec(s);
-					if (name !== 'None') {
-						acc[name] = (name in acc ? acc[name] : 0) + percentage / 100;
+					const match = /(.*) \((.)\)/.exec(s);
+					const index = match[2] === 'H' ? 2 : Number(match[2]) - 1;
+					acc[index] = getAbilityByName(match[1]);
+					return acc;
+				}, new Array(3));
+			pkm.types = type
+				.replace('Type: ', '')
+				.split(' / ')
+				.map(getTypeByName);
+			const items = {
+				items: lines
+					.filter(s => s.startsWith('Item '))
+					.reduce((acc, s) => {
+						const [, percentage, name] = /Item \d \((\d+)%\): (.*)/.exec(s);
+						if (name !== 'None') {
+							acc[name] = (name in acc ? acc[name] : 0) + percentage / 100;
+						}
+
+						return acc;
+					}, {}),
+			};
+			lines = lines.slice(Object.keys(items.items).length ? 3 : 1);
+			pkm.items = items;
+			const [expGroup, eggGroup, hatchCycles] = lines;
+			lines = lines.slice(4);
+			pkm.expGroup = getExperienceGroupByName(
+				expGroup.replace('EXP Group: ', ''),
+			);
+			pkm.eggGroups = eggGroup
+				.replace('Egg Group: ', '')
+				.split(' / ')
+				.map(getEggGroupByName);
+			pkm.hatchCycles = Number(hatchCycles.replace('Hatch Cycles: ', ''));
+
+			const levelUpMoves = [];
+			if (lines[0] === 'Level Up Moves:') {
+				lines = lines.slice(1);
+				let i = 0;
+				for (; i < lines.length; i++) {
+					const m = /- \[(\d+)\] (.*)/.exec(lines[i]);
+					if (!m) {
+						break;
 					}
 
-					return acc;
-				}, {}),
-		};
-		lines = lines.slice(Object.keys(items.items).length ? 3 : 1);
-		pkm.items = items;
-		const [expGroup, eggGroup, hatchCycles] = lines;
-		lines = lines.slice(4);
-		pkm.expGroup = getExperienceGroupByName(
-			expGroup.replace('EXP Group: ', ''),
-		);
-		pkm.eggGroups = eggGroup
-			.replace('Egg Group: ', '')
-			.split(' / ')
-			.map(getEggGroupByName);
-		pkm.hatchCycles = Number(hatchCycles.replace('Hatch Cycles: ', ''));
-
-		const levelUpMoves = [];
-		if (lines[0] === 'Level Up Moves:') {
-			lines = lines.slice(1);
-			let i = 0;
-			for (; i < lines.length; i++) {
-				const m = /- \[(\d+)\] (.*)/.exec(lines[i]);
-				if (!m) {
-					break;
+					const [, level, name] = m;
+					levelUpMoves.push([Number(level), getMoveByName(name)]);
 				}
 
-				const [, level, name] = m;
-				levelUpMoves.push([Number(level), getMoveByName(name)]);
+				lines = lines.slice(i);
 			}
 
-			lines = lines.slice(i);
-		}
+			pkm.levelUpMoves = levelUpMoves;
 
-		pkm.levelUpMoves = levelUpMoves;
+			const eggMoves = [];
+			if (lines[0] === 'Egg Moves:') {
+				lines = lines.slice(1);
+				let i = 0;
+				for (; i < lines.length; i++) {
+					const m = /- (.*)/.exec(lines[i]);
+					if (!m) {
+						break;
+					}
 
-		const eggMoves = [];
-		if (lines[0] === 'Egg Moves:') {
-			lines = lines.slice(1);
-			let i = 0;
-			for (; i < lines.length; i++) {
-				const m = /- (.*)/.exec(lines[i]);
-				if (!m) {
-					break;
+					const [, name] = m;
+					eggMoves.push(getMoveByName(name));
 				}
 
-				const [, name] = m;
-				eggMoves.push(getMoveByName(name));
+				lines = lines.slice(i);
 			}
 
-			lines = lines.slice(i);
-		}
+			pkm.eggMoves = eggMoves;
 
-		pkm.eggMoves = eggMoves;
+			const tms = [];
+			if (lines[0] === 'TMs:') {
+				lines = lines.slice(1);
+				let i = 0;
+				for (; i < lines.length; i++) {
+					const m = /- \[TM(\d+)\] (.*)/.exec(lines[i]);
+					if (!m) {
+						break;
+					}
 
-		const tms = [];
-		if (lines[0] === 'TMs:') {
-			lines = lines.slice(1);
-			let i = 0;
-			for (; i < lines.length; i++) {
-				const m = /- \[TM(\d+)\] (.*)/.exec(lines[i]);
-				if (!m) {
-					break;
+					const [, number] = m;
+					tms.push(Number(number));
 				}
 
-				const [, number] = m;
-				tms.push(Number(number));
+				lines = lines.slice(i);
 			}
 
-			lines = lines.slice(i);
-		}
+			pkm.tms = tms;
 
-		pkm.tms = tms;
+			const trs = [];
+			if (lines[0] === 'TRs:') {
+				lines = lines.slice(1);
+				let i = 0;
+				for (; i < lines.length; i++) {
+					const m = /- \[TR(\d+)\] (.*)/.exec(lines[i]);
+					if (!m) {
+						break;
+					}
 
-		const trs = [];
-		if (lines[0] === 'TRs:') {
-			lines = lines.slice(1);
-			let i = 0;
-			for (; i < lines.length; i++) {
-				const m = /- \[TR(\d+)\] (.*)/.exec(lines[i]);
-				if (!m) {
-					break;
+					const [, number] = m;
+					trs.push(Number(number));
 				}
 
-				const [, number] = m;
-				trs.push(Number(number));
+				lines = lines.slice(i);
 			}
 
-			lines = lines.slice(i);
-		}
+			pkm.trs = trs;
 
-		pkm.trs = trs;
-
-		return pkm;
-	});
+			return pkm;
+		}),
+	...extraPkm,
+];
 
 export default pkms;
 
