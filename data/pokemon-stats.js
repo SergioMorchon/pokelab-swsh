@@ -69,10 +69,7 @@ const pkms = [
 				.split('.')
 				.slice(0, 6)
 				.map(Number);
-			pkm.evYield = evYield
-				.replace('EV Yield: ', '')
-				.split('.')
-				.map(Number);
+			pkm.evYield = evYield.replace('EV Yield: ', '').split('.').map(Number);
 			pkm.abilities = abilities
 				.replace('Abilities: ', '')
 				.split(' | ')
@@ -82,10 +79,7 @@ const pkms = [
 					acc[index] = getAbilityByName(match[1]);
 					return acc;
 				}, new Array(3));
-			pkm.types = type
-				.replace('Type: ', '')
-				.split(' / ')
-				.map(getTypeByName);
+			pkm.types = type.replace('Type: ', '').split(' / ').map(getTypeByName);
 			const items = {
 				items: lines
 					.filter(s => s.startsWith('Item '))
