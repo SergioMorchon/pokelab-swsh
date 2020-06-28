@@ -132,7 +132,7 @@ Skull Bash	The user tucks in its head to raise its Defense stat on the first tur
 Spike Cannon	This move can’t be used. It’s recommended that this move is forgotten. Once forgotten, this move can’t be remembered.
 Constrict	This move can’t be used. It’s recommended that this move is forgotten. Once forgotten, this move can’t be remembered.
 Amnesia	The user temporarily empties its mind to forget its concerns. This sharply raises the user’s Sp. Def stat.
-Kinesis	This move can’t be used. It’s recommended that this move is forgotten. Once forgotten, this move can’t be remembered.
+Kinesis	The user distracts the target by bending a spoon. This lowers the target’s accuracy.
 Soft-Boiled	The user restores its own HP by up to half of its max HP.
 High Jump Kick	The target is attacked with a knee kick from a jump. If it misses, the user is hurt instead.
 Glare	The user intimidates the target with the pattern on its belly to cause paralysis.
@@ -795,3 +795,25 @@ False Surrender	The user pretends to bow its head, but then it stabs the target 
 Meteor Assault	The user attacks wildly with its thick leek. The user can’t move on the next turn, because the force of this move makes it stagger.
 Eternabeam	This is Eternatus’s most powerful attack in its original form. The user can’t move on the next turn.
 Steel Beam	The user fires a beam of steel that it collected from its entire body. This also damages the user.
+Expanding Force	The user attacks the target with its psychic power. This move’s power goes up and damages all opposing Pokémon on Psychic Terrain.
+Steel Roller	The user attacks while destroying the terrain. This move fails when the ground hasn’t turned into a terrain.
+Scale Shot	The user attacks by shooting scales two to five times in a row. This move boosts the user’s Speed stat but lowers its Defense stat.
+Meteor Beam	In this two-turn attack, the user gathers space power and boosts its Sp. Atk stat, then attacks the target on the next turn.
+Shell Side Arm	This move inflicts physical or special damage, whichever will be more effective. This may also poison the target.
+Misty Explosion	The user attacks everything around it and faints upon using this move. This move’s power is increased on Misty Terrain.
+Grassy Glide	Gliding on the ground, the user attacks the target. This move always goes first on Grassy Terrain.
+Rising Voltage	The user attacks with electric voltage rising from the ground. This move’s power doubles when the target is on Electric Terrain.
+Terrain Pulse	The user utilizes the power of the terrain to attack. This move’s type and power changes depending on the terrain when it’s used.
+Skitter Smack	The user skitters behind the target to attack. This also lowers the target’s Sp. Atk stat.
+Burning Jealousy	The user attacks with energy from jealousy. This leaves all opposing Pokémon that have had their stats boosted during the turn with a burn.
+Lash Out	The user lashes out to vent its frustration toward the target. If its stats were lowered during the turn, the power of this move is doubled.
+Poltergeist	The user attacks the target by controlling the target’s item. The move fails if the target doesn’t have an item.
+Corrosive Gas	The user surrounds everything around it with highly acidic gas and melts away items they hold.
+Coaching	The user properly coaches its ally Pokémon, boosting their Attack and Defense stats.
+Flip Turn	After making its attack, the user rushes back to switch places with a party Pokémon in waiting.
+Triple Axel	A consecutive three-kick attack that becomes more powerful with each successful hit.
+Dual Wingbeat	The user slams the target with its wings. The target is hit twice in a row.
+Scorching Sands	The user throws scorching sand at the target to attack. This may also leave the target with a burn.
+Jungle Healing	The user becomes one with the jungle, restoring HP and healing any status conditions of itself and its ally Pokémon in battle.
+Wicked Blow	The user, having mastered the Dark style, strikes the target with a fierce blow. This attack always results in a critical hit.
+Surging Strikes	The user, having mastered the Water style, strikes the target with a flowing motion three times in a row. This attack always results in a critical hit.

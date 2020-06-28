@@ -18,173 +18,177 @@ import {
 
 /** @typedef {import("./pokemon").Pokemon} Pokemon */
 
-/** @type {Pokemon[]} */
-const extraPkm = [
-	{
-		name: 'Slowpoke Galar',
-		id: 79,
-		galarDex: null,
-		abilities: ['Gluttony', 'Own Tempo', 'Regenerator'].map(getAbilityByName),
-		baseStats: [90, 65, 65, 40, 40, 15],
-		evYield: [1, 0, 0, 0, 0, 0],
-		types: ['Psychic'].map(getTypeByName),
-		eggGroups: ['Monster', 'Water1'].map(getEggGroupByName),
-		expGroup: getExperienceGroupByName('MediumFast'),
-		hatchCycles: 20,
-
-		// TODO:
-		eggMoves: [],
-		items: [],
-		levelUpMoves: [],
-		tms: [],
-		trs: [],
-	},
-];
-
 const ids = new Set([]);
 
 /** @type {Pokemon[]} */
-const pkms = [
-	...readFileSync('./data/raw/sword_shield_stats.txt', 'utf-8')
-		.split('======')
-		.filter(Boolean)
-		.map(s => {
-			let lines = s.trim().split(/\r?\n/);
-			const pkm = {};
-			const [header, galarDex, baseStats, evYield, abilities, type] = lines;
-			lines = lines.slice(6);
-			const [id, name] = header.split(' - ');
-			console.assert(!ids.has(id), `Duplicated pokemon ID ${id}`);
-			ids.add(id);
+const pkms = readFileSync('./data/raw/sword_shield_stats.txt', 'utf-8')
+	.split('======')
+	.filter(Boolean)
+	.map(s => {
+		let lines = s.trim().split(/\r?\n/);
+		const pkm = {};
+		const [
+			header,
+			galarDex,
+			baseStats,
+			evYield,
+			genderRatio,
+			catchRate,
+			abilities,
+			type,
+		] = lines;
+		lines = lines.slice(8);
+		const [id, name] = header.split(' - ');
+		console.assert(!ids.has(id), `Duplicated pokemon ID ${id}`);
+		ids.add(id);
 
-			pkm.id = Number(id);
-			pkm.name = name.split(/ \(Stage: \d+\)/)[0];
-			pkm.galarDex =
-				galarDex === 'Galar Dex: Foreign'
-					? null
-					: Number(galarDex.replace('Galar Dex: #', ''));
-			pkm.baseStats = baseStats
-				.replace('Base Stats: ', '')
-				.replace(/ \(BST: \d+\)/, '')
-				.split('.')
-				.slice(0, 6)
-				.map(Number);
-			pkm.evYield = evYield.replace('EV Yield: ', '').split('.').map(Number);
-			pkm.abilities = abilities
-				.replace('Abilities: ', '')
-				.split(' | ')
+		pkm.id = Number(id);
+		pkm.name = name.split(/ \(Stage: \d+\)/)[0];
+		pkm.galarDex =
+			galarDex === 'Galar Dex: Foreign'
+				? null
+				: Number(galarDex.replace('Galar Dex: #', ''));
+		pkm.baseStats = baseStats
+			.replace('Base Stats: ', '')
+			.replace(/ \(BST: \d+\)/, '')
+			.split('.')
+			.slice(0, 6)
+			.map(Number);
+		pkm.evYield = evYield.replace('EV Yield: ', '').split('.').map(Number);
+		pkm.genderRatio = Number(genderRatio.replace('Gender Ratio: ', ''));
+		pkm.catchRate = Number(catchRate.replace('Catch Rate: ', ''));
+		pkm.abilities = abilities
+			.replace('Abilities: ', '')
+			.split(' | ')
+			.reduce((acc, s) => {
+				const match = /(.*) \((.)\)/.exec(s);
+				const index = match[2] === 'H' ? 2 : Number(match[2]) - 1;
+				acc[index] = getAbilityByName(match[1]);
+				return acc;
+			}, new Array(3));
+		pkm.types = type.replace('Type: ', '').split(' / ').map(getTypeByName);
+		const items = {
+			items: lines
+				.filter(s => s.startsWith('Item '))
 				.reduce((acc, s) => {
-					const match = /(.*) \((.)\)/.exec(s);
-					const index = match[2] === 'H' ? 2 : Number(match[2]) - 1;
-					acc[index] = getAbilityByName(match[1]);
+					const [, percentage, name] = /Item \d \((\d+)%\): (.*)/.exec(s);
+					if (name !== 'None') {
+						acc[name] = (name in acc ? acc[name] : 0) + percentage / 100;
+					}
+
 					return acc;
-				}, new Array(3));
-			pkm.types = type.replace('Type: ', '').split(' / ').map(getTypeByName);
-			const items = {
-				items: lines
-					.filter(s => s.startsWith('Item '))
-					.reduce((acc, s) => {
-						const [, percentage, name] = /Item \d \((\d+)%\): (.*)/.exec(s);
-						if (name !== 'None') {
-							acc[name] = (name in acc ? acc[name] : 0) + percentage / 100;
-						}
+				}, {}),
+		};
+		lines = lines.slice(Object.keys(items.items).length ? 3 : 1);
+		pkm.items = items;
+		const [expGroup, eggGroup, hatchCycles] = lines;
+		lines = lines.slice(4);
+		pkm.expGroup = getExperienceGroupByName(
+			expGroup.replace('EXP Group: ', ''),
+		);
+		pkm.eggGroups = eggGroup
+			.replace('Egg Group: ', '')
+			.split(' / ')
+			.map(getEggGroupByName);
+		pkm.hatchCycles = Number(hatchCycles.replace('Hatch Cycles: ', ''));
 
-						return acc;
-					}, {}),
-			};
-			lines = lines.slice(Object.keys(items.items).length ? 3 : 1);
-			pkm.items = items;
-			const [expGroup, eggGroup, hatchCycles] = lines;
-			lines = lines.slice(4);
-			pkm.expGroup = getExperienceGroupByName(
-				expGroup.replace('EXP Group: ', ''),
-			);
-			pkm.eggGroups = eggGroup
-				.replace('Egg Group: ', '')
-				.split(' / ')
-				.map(getEggGroupByName);
-			pkm.hatchCycles = Number(hatchCycles.replace('Hatch Cycles: ', ''));
-
-			const levelUpMoves = [];
-			if (lines[0] === 'Level Up Moves:') {
-				lines = lines.slice(1);
-				let i = 0;
-				for (; i < lines.length; i++) {
-					const m = /- \[(\d+)\] (.*)/.exec(lines[i]);
-					if (!m) {
-						break;
-					}
-
-					const [, level, name] = m;
-					levelUpMoves.push([Number(level), getMoveByName(name)]);
+		const levelUpMoves = [];
+		if (lines[0] === 'Level Up Moves:') {
+			lines = lines.slice(1);
+			let i = 0;
+			for (; i < lines.length; i++) {
+				const m = /- \[(\d+)\] (.*)/.exec(lines[i]);
+				if (!m) {
+					break;
 				}
 
-				lines = lines.slice(i);
+				const [, level, name] = m;
+				levelUpMoves.push([Number(level), getMoveByName(name)]);
 			}
 
-			pkm.levelUpMoves = levelUpMoves;
+			lines = lines.slice(i);
+		}
 
-			const eggMoves = [];
-			if (lines[0] === 'Egg Moves:') {
-				lines = lines.slice(1);
-				let i = 0;
-				for (; i < lines.length; i++) {
-					const m = /- (.*)/.exec(lines[i]);
-					if (!m) {
-						break;
-					}
+		pkm.levelUpMoves = levelUpMoves;
 
-					const [, name] = m;
-					eggMoves.push(getMoveByName(name));
+		const eggMoves = [];
+		if (lines[0] === 'Egg Moves:') {
+			lines = lines.slice(1);
+			let i = 0;
+			for (; i < lines.length; i++) {
+				const m = /- (.*)/.exec(lines[i]);
+				if (!m) {
+					break;
 				}
 
-				lines = lines.slice(i);
+				const [, name] = m;
+				eggMoves.push(getMoveByName(name));
 			}
 
-			pkm.eggMoves = eggMoves;
+			lines = lines.slice(i);
+		}
 
-			const tms = [];
-			if (lines[0] === 'TMs:') {
-				lines = lines.slice(1);
-				let i = 0;
-				for (; i < lines.length; i++) {
-					const m = /- \[TM(\d+)\] (.*)/.exec(lines[i]);
-					if (!m) {
-						break;
-					}
+		pkm.eggMoves = eggMoves;
 
-					const [, number] = m;
-					tms.push(Number(number));
+		const tms = [];
+		if (lines[0] === 'TMs:') {
+			lines = lines.slice(1);
+			let i = 0;
+			for (; i < lines.length; i++) {
+				const m = /- \[TM(\d+)\] (.*)/.exec(lines[i]);
+				if (!m) {
+					break;
 				}
 
-				lines = lines.slice(i);
+				const [, number] = m;
+				tms.push(Number(number));
 			}
 
-			pkm.tms = tms;
+			lines = lines.slice(i);
+		}
 
-			const trs = [];
-			if (lines[0] === 'TRs:') {
-				lines = lines.slice(1);
-				let i = 0;
-				for (; i < lines.length; i++) {
-					const m = /- \[TR(\d+)\] (.*)/.exec(lines[i]);
-					if (!m) {
-						break;
-					}
+		pkm.tms = tms;
 
-					const [, number] = m;
-					trs.push(Number(number));
+		const trs = [];
+		if (lines[0] === 'TRs:') {
+			lines = lines.slice(1);
+			let i = 0;
+			for (; i < lines.length; i++) {
+				const m = /- \[TR(\d+)\] (.*)/.exec(lines[i]);
+				if (!m) {
+					break;
 				}
 
-				lines = lines.slice(i);
+				const [, number] = m;
+				trs.push(Number(number));
 			}
 
-			pkm.trs = trs;
+			lines = lines.slice(i);
+		}
 
-			return pkm;
-		}),
-	...extraPkm,
-];
+		pkm.trs = trs;
+
+		const armorTutors = [];
+		if (lines[0] === 'Armor Tutors:') {
+			lines = lines.slice(1);
+			let i = 0;
+			for (; i < lines.length; i++) {
+				const m = /- (.*)/.exec(lines[i]);
+				if (!m) {
+					break;
+				}
+
+				const [, movementName] = m;
+				armorTutors.push(movementName);
+			}
+
+			lines = lines.slice(i);
+		}
+
+		pkm.armorTutors = armorTutors;
+
+		return pkm;
+	});
 
 export default pkms;
 

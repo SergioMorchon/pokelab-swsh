@@ -36,7 +36,7 @@ const dex = pokemonStats(new Uint8Array(buffer), {
 		},
 	},
 	{
-		index: 320,
+		index: 415,
 		expectedStats: {
 			name: 'Spritzee',
 			galarId: 212,
@@ -57,9 +57,9 @@ const dex = pokemonStats(new Uint8Array(buffer), {
 		},
 	},
 	{
-		index: 524,
+		index: 67,
 		expectedStats: {
-			name: 'Slowpoke Galar',
+			name: 'Slowpoke 1',
 			galarId: null,
 			baseStats: [90, 65, 65, 40, 40, 15],
 			evYields: [1, 0, 0, 0, 0, 0],
@@ -75,6 +75,27 @@ const dex = pokemonStats(new Uint8Array(buffer), {
 			eggGroups: [EggGroups.Monster, EggGroups.Water1],
 			expGroup: ExpGroups.MediumFast,
 			hatchCycles: 20,
+		},
+	},
+	{
+		index: 641,
+		expectedStats: {
+			name: 'Zarude 1',
+			galarId: null,
+			baseStats: [105, 120, 105, 70, 95, 105],
+			evYields: [0, 3, 0, 0, 0, 0],
+			types: [Types.Dark, Types.Grass],
+			abilities: [
+				// Leaf Guard
+				101,
+				// Leaf Guard
+				101,
+				// Leaf Guard
+				101,
+			],
+			eggGroups: [EggGroups.Undiscovered],
+			expGroup: ExpGroups.Slow,
+			hatchCycles: 120,
 		},
 	},
 ].forEach(({ index, expectedStats }) => {
